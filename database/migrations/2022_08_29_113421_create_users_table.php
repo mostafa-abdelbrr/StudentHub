@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('current_year');
             $table->string('role', 10)->default('student');
             $table->timestamp('email_verified_at')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }
