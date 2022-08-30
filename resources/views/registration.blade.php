@@ -107,7 +107,7 @@
 <body class="text-center">
 
 <main class="form-signin w-100 m-auto">
-    <form method="post">
+    <form method="post" action="/register">
         @csrf
 {{--        <img class="mb-4" src="../assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">--}}
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
@@ -124,15 +124,15 @@
             <label for="floatingPassword">Password</label>
         </div>
         <div class="form-floating">
-            <input type="text" class="form-control" name="facultyName">
+            <input type="text" class="form-control" name="faculty">
             <label for="floatingInput">Faculty Name</label>
         </div>
         <div class="form-floating">
-            <input type="text" class="form-control" name="facultyDepartment">
+            <input type="text" class="form-control" name="faculty_department">
             <label for="floatingInput">Department</label>
         </div>
         <div class="form-floating">
-            <input type="text" class="form-control" name="year">
+            <input type="text" class="form-control" name="current_year">
             <label for="floatingInput">Current Level (0-5)</label>
         </div>
 
