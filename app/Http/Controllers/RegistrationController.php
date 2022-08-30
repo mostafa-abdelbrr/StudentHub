@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class RegistrationController extends Controller
 {
@@ -21,7 +22,10 @@ class RegistrationController extends Controller
     public function store(Request $request)
     {
         //
-        $user = User::create($request->except('_token'));
+        $data = $request->except('_token');
+        $data['password'] = Hash::make($data['password']);
+//        echo $data;
+        $user = User::create($data);
     }
 
 }
