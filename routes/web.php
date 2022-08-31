@@ -20,6 +20,8 @@ Route::get('/', function () {
 
 Route::get('/register', [RegistrationController::class, 'create']);
 Route::post('/register', [RegistrationController::class, 'store']);
+Route::view('/login', 'login');
+Route::post('/auth', [UserController::class, 'login']);
 
 
 
