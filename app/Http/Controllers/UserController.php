@@ -32,4 +32,25 @@ class UserController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
+    public function verify(Request $request)
+    {
+        $user = User::find($request->id);
+        $user->email_verified_at = now();
+        $user->save();
+        return view('user', ['user' => User::find($user->id)]);
+    }
+
+    public function edit(Request $request)
+    {
+        $data = array_filter($request->except(['_token', 'id']));
+//        $user = User::find($request->id);
+        $data['password'] = Hash::make($data['password']);
+        User::where('id', $request->id)->update($data);
+    }
+
+    public function delete(Request $request)
+    {
+        User::destroy($request->id);
+        return redirect('/list');
+    }
 }
