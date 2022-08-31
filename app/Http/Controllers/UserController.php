@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserVerified;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Auth;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -37,6 +39,7 @@ class UserController extends Controller
         $user = User::find($request->id);
         $user->email_verified_at = now();
         $user->save();
+        Mail::to($user->email)->send(new UserVerified($user));
         return view('user', ['user' => User::find($user->id)]);
     }
 
