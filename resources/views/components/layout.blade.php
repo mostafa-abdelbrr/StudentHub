@@ -16,7 +16,7 @@
             crossorigin="anonymous"></script>
 
 
-    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+{{--    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">--}}
     <link href="css/style.css" rel="stylesheet">
 
 </head>

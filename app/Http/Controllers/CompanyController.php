@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class CompanyController extends Controller
 {
+    private $rules = [
+'name' => ['required','unique:companies','max:255'],
+'logo' => ['nullable','image'],
+'field' => ['required', 'max:255'],
+'address' => ['required','max:255'],
+];
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +20,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        return view('ListCompanies', ['companies' => Company::paginate(15)]);
+        return view('company-list', ['companies' => Company::paginate(15)]);
     }
 
     /**
@@ -24,7 +30,7 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        return view('CreateCompany');
+        return view('company-create');
 
     }
 
@@ -36,8 +42,9 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate($this->rules);
         $data = array_filter($request->except('_token'));
-        if($data['logo']){
+        if($request->logo){
             $file = $request->file('logo');
             $filename= date('YmdHi').'-'.$file->getClientOriginalName();
 //            $file-> move(public_path('public/Image'), $filename);
@@ -70,7 +77,7 @@ class CompanyController extends Controller
      */
     public function edit($id)
     {
-        return view('EditCompany', ['company' => Company::find($id)]);
+        return view('company-edit', ['company' => Company::find($id)]);
     }
 
     /**
@@ -82,6 +89,7 @@ class CompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate($this->rules);
         $data = array_filter($request->except(['_token', 'id']));
         Company::where('id', $id)->update($data);
     }

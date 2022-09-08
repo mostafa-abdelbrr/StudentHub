@@ -31,6 +31,6 @@ class UserRegistered extends Mailable
     public function build()
     {
         return $this->subject('A new user has registered.')
-                    ->text('emails.newuser_admin_notification');
+                    ->view('emails.newuser_admin_notification');
     }
 }

@@ -7,6 +7,15 @@ use App\Models\Internship;
 
 class InternshipController extends Controller
 {
+    private $rules = [
+        'name' => ['required', 'max:255'],
+        'company_name' => ['required', 'max:255'],
+        'description' => ['required', 'max:500'],
+        'expires_at' => ['required', 'date', 'after:now'],
+        'required_faculty' => ['nullable'],
+        'required_department' => ['nullable'],
+        'minimum_year' => ['nullable', 'integer'],
+    ];
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +23,7 @@ class InternshipController extends Controller
      */
     public function index()
     {
-        return view('ListInternships', ['internships' => Internship::paginate(15)]);
+        return view('internship-list', ['internships' => Internship::paginate(15)]);
     }
 
     /**
@@ -24,7 +33,7 @@ class InternshipController extends Controller
      */
     public function create()
     {
-        return view('CreateInternship');
+        return view('internship-create');
     }
 
     /**
@@ -35,6 +44,7 @@ class InternshipController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate($this->rules);
         $data = array_filter($request->except('_token'));
         $internship = Internship::create($data);
 //        $admin = User::firstWhere('role', 'admin');
@@ -60,7 +70,7 @@ class InternshipController extends Controller
      */
     public function edit($id)
     {
-        return view('EditInternship', ['it' => Internship::find($id)]);
+        return view('internship-edit', ['it' => Internship::find($id)]);
     }
 
     /**
@@ -72,6 +82,7 @@ class InternshipController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate($this->rules);
         $data = array_filter($request->except(['_token', 'id']));
         Internship::where('id', $id)->update($data);
     }
