@@ -94,9 +94,8 @@
         <button class="w-100 btn btn-lg btn-primary" type="submit">Edit</button>
     </form>
     @if($user->email_verified_at === null)
-        <form action="{{route('user.verify')}}" method="POST">
+        <form action="{{route('user.verify', $user->id)}}" method="POST">
             @csrf
-            {{ Form::hidden('id', $user->id) }}
             <button class="w-100 btn btn-lg btn-primary" type="submit">Verify</button>
         </form>
     @endif

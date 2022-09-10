@@ -47,8 +47,8 @@ class InternshipController extends Controller
         $request->validate($this->rules);
         $data = array_filter($request->except('_token'));
         $internship = Internship::create($data);
-//        $admin = User::firstWhere('role', 'admin');
-//        Mail::to($admin->email)->send(new UserRegistered($user));
+        $admin = User::firstWhere('role', 'admin');
+        Mail::to($admin->email)->send(new UserRegistered($user));
     }
 
     /**
@@ -70,7 +70,7 @@ class InternshipController extends Controller
      */
     public function edit($id)
     {
-        return view('internship-edit', ['it' => Internship::find($id)]);
+        return view('internship-edit', ['internship' => Internship::find($id)]);
     }
 
     /**
@@ -83,7 +83,7 @@ class InternshipController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate($this->rules);
-        $data = array_filter($request->except(['_token', 'id']));
+        $data = array_filter($request->except(['_token']));
         Internship::where('id', $id)->update($data);
     }
 
@@ -93,9 +93,9 @@ class InternshipController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        Internship::destroy($request->id);
+        Internship::destroy($id);
         return redirect()->route('internship.list');
     }
 }

@@ -2,9 +2,20 @@
     <x-slot:title>
         Edit Internship
     </x-slot:title>
-    <form method="post" action="{{route('internship.update', $it->id)}}">
+    <form method="post" action="{{route('internship.update', $internship->id)}}">
         @csrf
         <h1 class="h3 mb-3 fw-normal">Edit Internship</h1>
+        <x-input>
+            <x-slot:label>
+                Name
+            </x-slot:label>
+            <x-slot:name>
+                name
+            </x-slot:name>
+            <x-slot:value>
+                {{$internship->name}}
+            </x-slot:value>
+        </x-input>
         <x-input>
             <x-slot:label>
                 Company Name
@@ -13,14 +24,14 @@
                 company_name
             </x-slot:name>
             <x-slot:value>
-                {{$it->company_name}}
+                {{$internship->company_name}}
             </x-slot:value>
         </x-input>
         <div class="form-floating">
                 <textarea class="form-control @error('description') is-invalid @enderror" name="description"
                           placeholder="Enter the internship's details."
                           style="height: 250px;">
-                    {{ old('description', $it->description) }}
+                    {{ old('description', $internship->description) }}
                 </textarea>
             @error('description')
             <div class="alert alert-danger">{{ $message }}</div>
@@ -37,7 +48,7 @@
                 expires_at
             </x-slot:name>
             <x-slot:value>
-                {{$it->expires_at}}
+                {{$internship->expires_at}}
             </x-slot:value>
         </x-input>
         <x-input>
@@ -48,7 +59,7 @@
                 required_faculty
             </x-slot:name>
             <x-slot:value>
-                {{$it->required_faculty}}
+                {{$internship->required_faculty}}
             </x-slot:value>
         </x-input>
         <x-input>
@@ -59,7 +70,7 @@
                 required_department
             </x-slot:name>
             <x-slot:value>
-                {{$it->required_department}}
+                {{$internship->required_department}}
             </x-slot:value>
         </x-input>
         <x-input>
@@ -70,7 +81,7 @@
                 minimum_year
             </x-slot:name>
             <x-slot:value>
-                {{$it->minimum_year}}
+                {{$internship->minimum_year}}
             </x-slot:value>
         </x-input>
         <br>

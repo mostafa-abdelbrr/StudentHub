@@ -70,7 +70,7 @@ class UserController extends Controller
         })) {
             $request->session()->regenerate();
 
-            return redirect('/ListUsers');
+            return redirect()->route('home');
         } elseif (Auth::attempt($credentials)) {
 
             return back()->withErrors([
@@ -82,19 +82,19 @@ class UserController extends Controller
         ])->onlyInput('email');
     }
 
-    public function verify(Request $request)
+    public function verify($id)
     {
-        $user = User::find($request->id);
+        $user = User::find($id);
         $user->email_verified_at = now();
         $user->save();
         Mail::to($user->email)->send(new UserVerified($user));
-        return view('user', ['user' => User::find($user->id)]);
+        return view('user-edit', ['user' => $user]);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate($this->rules);
-        $data = array_filter($request->except(['_token', 'id']));
+        $data = array_filter($request->except(['_token']));
         if($data['image']){
             $file = $request->file('image');
             $filename= date('YmdHi').'-'.$file->getClientOriginalName();
@@ -109,12 +109,12 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        return view('user', ['user' => User::find($id)]);
+        return view('user-edit', ['user' => User::find($id)]);
     }
 
-    public function delete(Request $request)
+    public function delete($id)
     {
-        User::destroy($request->id);
+        User::destroy($id);
         return redirect()->route('user.list');
     }
 }
