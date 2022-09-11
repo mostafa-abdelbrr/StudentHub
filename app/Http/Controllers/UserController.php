@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\UserRegistered;
 use App\Mail\UserVerified;
 use App\Models\User;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -61,6 +61,9 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
+        if(Auth::check()){
+            return redirect()->route('home');
+        }
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -112,9 +115,50 @@ class UserController extends Controller
         return view('user-edit', ['user' => User::find($id)]);
     }
 
+    public function profile()
+    {
+        return view('user-edit', ['user' => Auth::User()]);
+    }
+
+    public function profile_update(Request $request) {
+        return $this->update($request, Auth::id());
+    }
+
     public function delete($id)
     {
         User::destroy($id);
         return redirect()->route('user.list');
+    }
+
+    public function edit_password() {
+        return view('password-change');
+    }
+
+    public function update_password(Request $request){
+        $request->validate([
+            'old_password' => ['required', 'min:8', 'max:100', 'current_password'],
+            'new_password' => ['required', 'min:8', 'max:100', 'confirmed'],
+        ]);
+        $user = User::find(Auth::id());
+        $data = $request->except('_token');
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+    }
+
+    public function signin() {
+        return view('login');
+    }
+
+    public function logout(Request $request)
+    {
+        if(Auth::check()){
+            Auth::logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+        }
+        return redirect()->route('home');
     }
 }

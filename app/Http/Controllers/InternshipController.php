@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ApplicableInternship;
 use Illuminate\Http\Request;
 use App\Models\Internship;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class InternshipController extends Controller
@@ -23,8 +24,12 @@ class InternshipController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $filter=null)
     {
+        if ($filter)
+        {
+            return filter($request, $filter);
+        }
         return view('internship-list', ['internships' => Internship::paginate(15)]);
     }
 
@@ -108,5 +113,22 @@ class InternshipController extends Controller
     {
         Internship::destroy($id);
         return redirect()->route('internship.list');
+    }
+
+    public function show_applicable() {
+        $user = Auth::user();
+        $internships = Internship::where('minimum_level', '<=', $user->current_level)
+            ->whereIn('required_faculty', ['Any', $user->faculty])
+            ->whereIn('required_department', ['Any', $user->department]);
+        return view('internship-list', ['internships' => $internships->paginate(15), 'applicable_checked' => 'true']);
+
+    }
+
+    public function filter(Request $request, $filter){
+        if ($filter=='true') {
+            if ($request->show_applicable_only == '1') {
+                $this->show_applicable();
+            }
+        }
     }
 }

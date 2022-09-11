@@ -8,7 +8,11 @@
            @if(isset($input_type))
                @if($input_type=='password')
                @else
-                   value="{{old(strval($name), $value)}}"
+                   @if($input_type == 'checkbox')
+                       value="{{$value}}"
+                   @else
+                       value="{{old(strval($name), $value)}}"
+                   @endif
            @endif
            @else
                value="{{old(strval($name), $value)}}"
