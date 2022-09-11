@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ApplicableInternship;
 use Illuminate\Http\Request;
 use App\Models\Internship;
+use Illuminate\Support\Facades\Mail;
 
 class InternshipController extends Controller
 {
@@ -47,8 +49,17 @@ class InternshipController extends Controller
         $request->validate($this->rules);
         $data = array_filter($request->except('_token'));
         $internship = Internship::create($data);
-        $admin = User::firstWhere('role', 'admin');
-        Mail::to($admin->email)->send(new UserRegistered($user));
+        $requirements = [['minimum_level', '>=', $internship->minimum_level], ['email_subscription', '=', '1']];
+        if ($internship->required_faculty != 'Any'){
+            array_push($requirements, ['required_faculty', '=' , $internship->required_faculty]);
+        }
+        if ($internship->required_department != 'Any'){
+            array_push($requirements, ['required_department', '=', $internship->required_department]);
+        }
+        $users = User::where($requirements);
+        foreach ($users as $user){
+            Mail::to($user->email)->send(new ApplicableInternship($user, $internship));
+        }
     }
 
     /**

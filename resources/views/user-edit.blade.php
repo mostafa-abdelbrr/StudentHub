@@ -90,6 +90,12 @@
                 {{ $user->current_year }}
             </x-slot:value>
         </x-input>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="1" name="email_subscription" id="email_checkbox">
+        <label class="form-check-label" for="email_checkbox">
+            Subscribe to emails:
+        </label>
+    </div>
         <br>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Edit</button>
     </form>

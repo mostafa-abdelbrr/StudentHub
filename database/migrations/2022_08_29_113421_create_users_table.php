@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('faculty_department', 50);
             $table->integer('current_year');
             $table->string('role', 10)->default('student');
+            $table->boolean('email_subscription')->nullable();
             $table->datetime('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
