@@ -54,7 +54,6 @@
                 {{ $company->address }}
             </x-slot:value>
         </x-input>
-        <br>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Edit</button>
         <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
     </form>

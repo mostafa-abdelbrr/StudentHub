@@ -2,11 +2,13 @@
     <x-slot:title>
         Edit User
     </x-slot:title>
-    <form method="POST" @if(Auth::check())
-        @if(Auth::User()->role == 'admin')
-            action="{{route('user.update', $user->id)}}"
+    <form method="POST"
+          @if(Auth::check())
+              @if(Auth::User()->role == 'admin')
+                  action="{{route('user.update', $user->id)}}"
           @else
               action="{{route('user.profile_update', Auth::User()->id)}}"
+          @endif
           @endif
           enctype="multipart/form-data">
         @csrf
@@ -52,17 +54,21 @@
                 {{ $user->email }}
             </x-slot:value>
         </x-input>
-        <x-input>
-            <x-slot:input_type>
-                password
-            </x-slot:input_type>
-            <x-slot:label>
-                Password
-            </x-slot:label>
-            <x-slot:name>
-                password
-            </x-slot:name>
-        </x-input>
+        @if(Auth::check())
+            @if(Auth::User()->role=='admin')
+                <x-input>
+                    <x-slot:input_type>
+                        password
+                    </x-slot:input_type>
+                    <x-slot:label>
+                        Password
+                    </x-slot:label>
+                    <x-slot:name>
+                        password
+                    </x-slot:name>
+                </x-input>
+            @endif
+        @endif
         <x-input>
             <x-slot:label>
                 Faculty Name
@@ -79,10 +85,10 @@
                 Department
             </x-slot:label>
             <x-slot:name>
-                department
+                faculty_department
             </x-slot:name>
             <x-slot:value>
-                {{ $user->department }}
+                {{ $user->faculty_department }}
             </x-slot:value>
         </x-input>
         <x-input>
@@ -97,23 +103,31 @@
             </x-slot:value>
         </x-input>
         <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="1" name="email_subscription" id="email_checkbox">
             <label class="form-check-label" for="email_checkbox">
                 Subscribe to emails:
+                <input class="form-check-input" type="checkbox" value="1" name="email_subscription" id="email_checkbox"
+                       @if($user->email_subscription == '1') checked="true" @endif>
             </label>
         </div>
-        <br>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Edit</button>
     </form>
-    @if($user->email_verified_at === null)
-        <form action="{{route('user.verify', $user->id)}}" method="POST">
-            @csrf
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Verify</button>
-        </form>
+    @if(Auth::check())
+        @if(Auth::User()->role=='admin')
+            @if($user->email_verified_at === null)
+                <form action="{{route('user.verify', $user->id)}}" method="POST">
+                    @csrf
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Verify</button>
+                </form>
+            @endif
+        @endif
     @endif
-    <form action="{{route('user.edit_password')}}" method="GET">
-        @csrf
-        <button class="w-100 btn btn-lg btn-primary" type="submit">Go to Change password</button>
-    </form>
+    @if(Auth::check())
+        @if(Auth::User()->role!='admin')
+            <form action="{{route('user.edit_password')}}" method="GET">
+                @csrf
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Go to Change password</button>
+            </form>
+        @endif
+    @endif
     <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
 </x-layout>

@@ -16,12 +16,15 @@
             crossorigin="anonymous"></script>
 
 
-{{--    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">--}}
-    <link href="css/style.css" rel="stylesheet">
+    {{--    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">--}}
+    <link href="{{asset('css/style.css')}}" rel="stylesheet">
 
 </head>
 <body class="text-center">
-<x-navbar></x-navbar>
+@if(isset($hide_navbar))
+@else
+    <x-navbar></x-navbar>
+@endif
 <main class="form-signin w-100 m-auto">
     {{ $slot }}
 </main>

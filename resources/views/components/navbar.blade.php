@@ -7,9 +7,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
-                </li>
+{{--                <li class="nav-item">--}}
+{{--                    <a class="nav-link active" aria-current="page" href="/">Home</a>--}}
+{{--                </li>--}}
                 @if(Auth::check() && Auth::User()->role == 'admin')
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('user.list') }}">User List</a>
@@ -23,7 +23,7 @@
                 </li>
                 @if(Auth::check())
                     <li>
-                        <a class="nav-link" href="{{ route('user.profile') }}">Log out</a>
+                        <a class="nav-link" href="{{ route('user.profile') }}">Profile</a>
                     </li>
                     <li>
                         <a class="nav-link" href="{{ route('user.logout') }}">Log out</a>
