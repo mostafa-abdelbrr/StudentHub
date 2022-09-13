@@ -44,6 +44,7 @@ class CommentController extends Controller
         $data['user_id'] = Auth::id();
         $data['post_id'] = $post_id;
         $comment = Comment::create($data);
+        return redirect()->route('post.list');
     }
 
     /**
@@ -81,6 +82,7 @@ class CommentController extends Controller
         $comment = Comment::find($id);
         $comment->content = $request->content;
         $comment->save();
+        return redirect()->route('post.list');
     }
 
     /**
@@ -92,5 +94,6 @@ class CommentController extends Controller
     public function destroy($id)
     {
         Comment::destroy($id);
+        return redirect()->route('post.list');
     }
 }

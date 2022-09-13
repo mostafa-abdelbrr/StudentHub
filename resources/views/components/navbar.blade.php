@@ -21,6 +21,9 @@
                 <li>
                     <a class="nav-link" href="{{ route('internship.list') }}">Internship List</a>
                 </li>
+                <li>
+                    <a class="nav-link" href="{{ route('post.list') }}">Community</a>
+                </li>
                 @if(Auth::check())
                     <li>
                         <a class="nav-link" href="{{ route('user.profile') }}">Profile</a>

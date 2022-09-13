@@ -16,21 +16,3 @@
 
 
     <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-
-    <link href="{{asset('css/style.css')}}" rel="stylesheet">
-
-</head>
-<body>
-<x-navbar></x-navbar>
-<div class="container">
-    @isset($route)
-        <form action="{{ $route }}">
-            <input type="submit" class="btn btn-primary" value="Create"/>
-        </form>
-    @endisset
-    {{ $slot }}
-</div>
-</body>
-</html>
