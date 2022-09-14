@@ -3,9 +3,9 @@
         Internships Data
     </x-slot:title>
     <x-slot:route>
-        {{ route('internship.create') }}
+{{--        {{ route('internship.create') }}--}}
     </x-slot:route>
-    <form action="{{route('internship.list', ['filter' => 'true'])}}" method="GET">
+{{--    <form action="{{route('internship.list', ['filter' => 'true'])}}" method="GET">--}}
         {{--        <input type="dropdown" name="">--}}
         <table class="table">
             <thead>
@@ -71,6 +71,32 @@
                                         </form>
                                     </div>
                                 @endif
+                                <form action="
+                                @isset($internship->statuses[0]->id)
+                                {{ route('status.toggle', $internship->statuses[0]->id) }}
+                                @else
+                                {{ route('status.store', $internship->id) }}
+                                @endisset
+                                " method="POST">
+                                    @csrf
+                                    <input type="submit" class="btn
+                                        @isset($internship->statuses[0]->id)
+                                        @if($internship->statuses[0]->current_status == 'Started')
+                                        btn-warning
+                                        @elseif ($internship->statuses[0]->current_status == 'In progress')
+                                        btn-danger
+                                        @elseif ($internship->statuses[0]->current_status == 'Ended/Cancelled')
+                                        btn btn-success
+                                        @else
+                                        btn btn-success
+                                        @endif
+                                        @else
+                                        btn btn-success
+                                        @endisset
+                                        "
+                                           value="@isset($internship->statuses[0]->id) @if($internship->statuses[0]->current_status == 'Started')Mark as In progress @elseif ($internship->statuses[0]->current_status == 'In progress')End/Cancel @elseif ($internship->statuses[0]->current_status == 'Ended/Cancelled')Start @else Start @endif @else Start @endisset"/>
+                                </form>
+
                             @endif
                         </div>
                     </div>

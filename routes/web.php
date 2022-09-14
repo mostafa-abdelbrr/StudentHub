@@ -2,10 +2,10 @@
 
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\InternshipController;
-use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\UserController;
-use \App\Http\Controllers\PostController;
-use \App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
+use \App\Http\Controllers\StatusController;
 use Illuminate\Support\Facades\Route;
 
 //use App\Models\Company;
@@ -73,6 +73,11 @@ Route::post('post-store', [PostController::class, 'store'])->middleware('auth')-
 Route::post('comment-store/{post_id}', [CommentController::class, 'store'])->middleware('auth')->name('comment.store');
 Route::delete('post-delete/{id}', [PostController::class, 'destroy'])->middleware('auth')->name('post.delete');
 Route::delete('comment-delete/{id}', [CommentController::class, 'destroy'])->middleware('auth')->name('comment.delete');
+
+Route::middleware(['auth'])->controller(StatusController::class)->group(function() {
+    Route::post('status-update/{id}', 'update')->name('status.toggle');
+    Route::post('status-create/{internship_id}', 'store')->name('status.store');
+});
 //Auth::routes();
 
 //Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
