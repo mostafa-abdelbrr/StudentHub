@@ -101,7 +101,9 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        Post::destroy($id);
+        if (Auth::User()->role == 'admin' || Auth::id() == Post::find($id)->user->id) {
+            Post::destroy($id);
+        }
         return redirect()->route('post.list');
     }
 }
