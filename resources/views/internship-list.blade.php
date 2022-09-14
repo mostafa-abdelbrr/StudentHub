@@ -3,30 +3,30 @@
         Internships Data
     </x-slot:title>
     <x-slot:route>
-{{--        {{ route('internship.create') }}--}}
+        {{--        {{ route('internship.create') }}--}}
     </x-slot:route>
-{{--    <form action="{{route('internship.list', ['filter' => 'true'])}}" method="GET">--}}
-        {{--        <input type="dropdown" name="">--}}
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Filters</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    <label>
-                        Show Applicable only
-                        <input type="checkbox" value="1" name="show_applicable_only"
-                               @if(Auth::check()) @else disabled="true"
-                               @endif @isset($applicable_checked) checked="true" @endisset>
-                    </label>
-                    <input type="submit" class="btn btn-primary" value="Filter"/>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    {{--    <form action="{{route('internship.list', ['filter' => 'true'])}}" method="GET">--}}
+    {{--        <input type="dropdown" name="">--}}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Filters</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label>
+                    Show Applicable only
+                    <input type="checkbox" value="1" name="show_applicable_only"
+                           @if(Auth::check()) @else disabled="true"
+                           @endif @isset($applicable_checked) checked="true" @endisset>
+                </label>
+                <input type="submit" class="btn btn-primary" value="Filter"/>
+            </td>
+        </tr>
+        </tbody>
+    </table>
     </form>
     <table class="table">
         <tbody>
@@ -71,30 +71,35 @@
                                         </form>
                                     </div>
                                 @endif
-                                <form action="
-                                @isset($internship->statuses[0]->id)
-                                {{ route('status.toggle', $internship->statuses[0]->id) }}
-                                @else
-                                {{ route('status.store', $internship->id) }}
-                                @endisset
-                                " method="POST">
+                                <form action="{{ route('status.toggle', $internship) }}" method="POST">
                                     @csrf
-                                    <input type="submit" class="btn
-                                        @isset($internship->statuses[0]->id)
-                                        @if($internship->statuses[0]->current_status == 'Started')
-                                        btn-warning
-                                        @elseif ($internship->statuses[0]->current_status == 'In progress')
-                                        btn-danger
-                                        @elseif ($internship->statuses[0]->current_status == 'Ended/Cancelled')
-                                        btn btn-success
-                                        @else
-                                        btn btn-success
+                                    <input type="submit"
+                                           @if(!$internship->statuses->isEmpty())
+                                               @if($internship->statuses[0]->current_status == 'Started')
+                                                   class="btn btn-warning"
+                                           value="Mark as In progress"
+                                           @elseif ($internship->statuses[0]->current_status == 'In progress')
+                                               class="btn btn-danger"
+                                           value="End"
+                                           @elseif ($internship->statuses[0]->current_status == 'Ended')
+                                               class="btn btn-success"
+                                           value="Ended"
+                                           disabled="true"
+                                           @else
+                                               class="btn btn-success"
+                                           value="Start"
+                                           @endif
+                                           @else
+                                               class="btn btn-success"
+                                           value="Start"
                                         @endif
-                                        @else
-                                        btn btn-success
-                                        @endisset
-                                        "
-                                           value="@isset($internship->statuses[0]->id) @if($internship->statuses[0]->current_status == 'Started')Mark as In progress @elseif ($internship->statuses[0]->current_status == 'In progress')End/Cancel @elseif ($internship->statuses[0]->current_status == 'Ended/Cancelled')Start @else Start @endif @else Start @endisset"/>
+                                           @if(!($internship->minimum_year <= Auth::User()->current_year &&
+                                    ($internship->required_faculty == 'Any' || $internship->required_faculty == Auth::User()->faculty) &&
+                                    ($internship->required_department == 'Any' || $internship->required_department == Auth::User()->faculty_department)
+                                    ))
+                                               disabled="true"
+                                        @endif
+                                    />
                                 </form>
 
                             @endif

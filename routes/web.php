@@ -75,8 +75,8 @@ Route::delete('post-delete/{id}', [PostController::class, 'destroy'])->middlewar
 Route::delete('comment-delete/{id}', [CommentController::class, 'destroy'])->middleware('auth')->name('comment.delete');
 
 Route::middleware(['auth'])->controller(StatusController::class)->group(function() {
-    Route::post('status-update/{id}', 'update')->name('status.toggle');
-    Route::post('status-create/{internship_id}', 'store')->name('status.store');
+    Route::post('status-toggle/{internship}', 'toggle')->name('status.toggle');
+//    Route::post('status-create/{internship_id}', 'store')->name('status.store');
 });
 //Auth::routes();
 

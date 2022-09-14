@@ -36,9 +36,8 @@ class StatusController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request, $internship_id)
+    public function store(Internship $internship)
     {
-        $internship = Internship::find($internship_id);
         $user = Auth::User();
         if(
             $internship->minimum_year <= $user->current_year &&
@@ -46,7 +45,7 @@ class StatusController extends Controller
             ($internship->required_department == 'Any' || $internship->required_department == $user->faculty_department)
         ) {
             Status::create([
-                'internship_id' => $internship_id,
+                'internship_id' => $internship->id,
                 'user_id' => Auth::id(),
                 'current_status' => 'Started',
             ]);
@@ -83,26 +82,25 @@ class StatusController extends Controller
      * @param Status $status
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update($status)
     {
-        $status = Status::find($id);
-        $internship = $status->internship;
-        $user = Auth::User();
-        if(
-            $internship->minimum_year <= $user->current_year &&
-            ($internship->required_faculty == 'Any' || $internship->required_faculty == $user->faculty) &&
-            ($internship->required_department == 'Any' || $internship->required_department == $user->faculty_department)
-        ) {
-            if ($status->current_status == 'Started') {
-                $status->current_status = 'In progress';
-            } elseif ($status->current_status == 'In progress') {
-                $status->current_status = 'Ended/Cancelled';
-            } elseif ($status->current_status == 'Ended/Canceled') {
-                $status->current_status = 'Started';
-            } else {
-                $status->current_status = 'Started';
+        if ($status->current_status != 'Ended') {
+            $internship = $status->internship;
+            $user = Auth::User();
+            if (
+                $internship->minimum_year <= $user->current_year &&
+                ($internship->required_faculty == 'Any' || $internship->required_faculty == $user->faculty) &&
+                ($internship->required_department == 'Any' || $internship->required_department == $user->faculty_department)
+            ) {
+                if ($status->current_status == 'Started') {
+                    $status->current_status = 'In progress';
+                } elseif ($status->current_status == 'In progress') {
+                    $status->current_status = 'Ended';
+                } else {
+                    $status->current_status = 'Started';
+                }
+                $status->save();
             }
-            $status->save();
         }
         return redirect()->route('internship.list');
     }
@@ -116,5 +114,14 @@ class StatusController extends Controller
     public function destroy(Status $status)
     {
         //
+    }
+
+    public function toggle(Internship $internship) {
+        if($internship->statuses->isEmpty()) {
+            return $this->store($internship);
+        }
+        else {
+            return $this->update($internship->statuses[0]);
+        }
     }
 }
