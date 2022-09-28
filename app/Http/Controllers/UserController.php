@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Mail\UserVerified;
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Auth;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+
+    public function index()
+    {
+        return view('list', ['users' => User::paginate(15)]);
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -22,9 +28,8 @@ class UserController extends Controller
         })) {
             $request->session()->regenerate();
 
-            return redirect('/list');
-        }
-        elseif (Auth::attempt($credentials)) {
+            return redirect('/ListUsers');
+        } elseif (Auth::attempt($credentials)) {
 
             return back()->withErrors([
                 'email' => 'The provided user hasn\'t been verified yet.',
@@ -34,6 +39,7 @@ class UserController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
+
     public function verify(Request $request)
     {
         $user = User::find($request->id);
@@ -43,17 +49,22 @@ class UserController extends Controller
         return view('user', ['user' => User::find($user->id)]);
     }
 
-    public function edit(Request $request)
+    public function update(Request $request, $id)
     {
         $data = array_filter($request->except(['_token', 'id']));
 //        $user = User::find($request->id);
         $data['password'] = Hash::make($data['password']);
-        User::where('id', $request->id)->update($data);
+        User::where('id', $id)->update($data);
+    }
+
+    public function edit($id)
+    {
+        return view('user', ['user' => User::find($id)]);
     }
 
     public function delete(Request $request)
     {
         User::destroy($request->id);
-        return redirect('/list');
+        return redirect()->route('user.list');
     }
 }
