@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Mail\UserRegistered;
+use Illuminate\Support\Facades\Mail;
 
 class RegistrationController extends Controller
 {
@@ -26,6 +28,8 @@ class RegistrationController extends Controller
         $data['password'] = Hash::make($data['password']);
 //        echo $data;
         $user = User::create($data);
+        $admin = User::firstWhere('role', 'admin');
+        Mail::to($admin->email)->send(new UserRegistered($user));
     }
 
 }
