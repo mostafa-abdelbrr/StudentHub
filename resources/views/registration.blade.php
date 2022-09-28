@@ -2,6 +2,9 @@
     <x-slot:title>
         Registration
     </x-slot:title>
+    <x-slot:hide_navbar>
+        true
+    </x-slot:hide_navbar>
     <form method="POST" action="{{route('user.store')}}" enctype="multipart/form-data">
         @csrf
         <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
@@ -72,10 +75,10 @@
         </x-input>
         <br>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
     </form>
+    <br>
+    <form method="GET" action="{{route('login')}}">
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
+    </form>
+    <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
 </x-layout>
-{{--</main>--}}
-
-{{--</body>--}}
-{{--</html>--}}

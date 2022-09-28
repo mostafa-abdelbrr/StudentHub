@@ -17,13 +17,12 @@
 
     <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
 {{--    <link type="text/css" rel="stylesheet" href="../../css/style.css">--}}
-    <link href="css/style.css" rel="stylesheet">
+    <link href="{{asset('css/style.css')}}" rel="stylesheet">
 
 </head>
 <body>
+<x-navbar></x-navbar>
 <div class="container">
-    <x-navbar>
-    </x-navbar>
     <form action="{{ $route }}">
         <input type="submit" class="btn btn-primary" value="Create" />
     </form>

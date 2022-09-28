@@ -21,7 +21,7 @@ return new class extends Migration
             $table->datetime('expires_at');
             $table->string('required_faculty')->default('Any');
             $table->string('required_department')->default('Any');
-            $table->integer('minimum_year')->default(-1);
+            $table->integer('minimum_year')->default(0);
             $table->timestamps();
         });
     }

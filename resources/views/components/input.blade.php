@@ -10,13 +10,16 @@
                @else
                    @if($input_type == 'checkbox')
                        value="{{$value}}"
-                   @else
-                       value="{{old(strval($name), $value)}}"
-                   @endif
+           @else
+               value="{{old(strval($name), $value)}}"
+           @endif
            @endif
            @else
                value="{{old(strval($name), $value)}}"
-        @endif
+           @endif
+           @isset($input_disabled)
+               disabled="true"
+        @endisset
     >
     <label for="floatingInput">{{$label}}</label>
     @error(strval($name))

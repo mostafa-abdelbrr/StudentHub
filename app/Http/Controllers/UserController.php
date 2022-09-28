@@ -96,9 +96,21 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate($this->rules);
+        if($request->email == Auth::User()->email){
+            $request->validate([
+                'password' => ['required', 'min:8', 'max:100'],
+                'name' => ['required', 'max:50'],
+                'image' => ['nullable', 'image'],
+                'faculty' => ['required', 'max:50'],
+                'faculty_department' => ['required', 'max:50'],
+                'current_year' => ['required', 'integer'],
+            ]);
+        }
+        else {
+            $request->validate($this->rules);
+        }
         $data = array_filter($request->except(['_token']));
-        if($data['image']){
+        if($request->image){
             $file = $request->file('image');
             $filename= date('YmdHi').'-'.$file->getClientOriginalName();
             $data['image'] = $filename;
@@ -108,6 +120,7 @@ class UserController extends Controller
         }
         $data['password'] = Hash::make($data['password']);
         User::where('id', $id)->update($data);
+        return redirect()->route('user.list');
     }
 
     public function edit($id)
@@ -116,6 +129,11 @@ class UserController extends Controller
     }
 
     public function profile()
+    {
+        return view('user-profile', ['user' => Auth::User()]);
+    }
+
+    public function edit_profile()
     {
         return view('user-edit', ['user' => Auth::User()]);
     }
