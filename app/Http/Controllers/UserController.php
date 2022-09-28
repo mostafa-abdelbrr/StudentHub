@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserRegistered;
 use App\Mail\UserVerified;
 use App\Models\User;
 use Auth;
@@ -11,10 +12,51 @@ use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    private $rules = [
+        'email' => ['required', 'unique:users', 'max:50'],
+        'password' => ['required', 'min:8', 'max:100'],
+        'name' => ['required', 'max:50'],
+        'image' => ['nullable', 'image'],
+        'faculty' => ['required', 'max:50'],
+        'faculty_department' => ['required', 'max:50'],
+        'current_year' => ['required', 'integer'],
+    ];
 
     public function index()
     {
-        return view('list', ['users' => User::paginate(15)]);
+        return view('user-list', ['users' => User::paginate(15)]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+        return view('registration');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate($this->rules);
+        $data = $request->except('_token');
+        $data['password'] = Hash::make($data['password']);
+        if($request->image){
+            $file = $request->file('image');
+            $filename= date('YmdHi').'-'.$file->getClientOriginalName();
+            $data['image'] = $filename;
+
+            $request->image->move(public_path('images'), $filename);
+
+        }
+
+        $user = User::create($data);
+        $admin = User::firstWhere('role', 'admin');
+        if(!is_null($admin)) {
+            Mail::to($admin->email)->send(new UserRegistered($user));
+        }
     }
 
     public function login(Request $request)
@@ -51,8 +93,16 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate($this->rules);
         $data = array_filter($request->except(['_token', 'id']));
-//        $user = User::find($request->id);
+        if($data['image']){
+            $file = $request->file('image');
+            $filename= date('YmdHi').'-'.$file->getClientOriginalName();
+            $data['image'] = $filename;
+
+            $request->image->move(public_path('images'), $filename);
+
+        }
         $data['password'] = Hash::make($data['password']);
         User::where('id', $id)->update($data);
     }

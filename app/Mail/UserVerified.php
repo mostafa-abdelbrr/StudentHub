@@ -31,6 +31,6 @@ class UserVerified extends Mailable
     public function build()
     {
         return $this->subject('Manual verification.')
-            ->text('emails.user_verified_notification');
+            ->view('emails.user_verified_notification');
     }
 }

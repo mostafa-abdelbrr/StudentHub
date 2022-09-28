@@ -1,44 +1,104 @@
 <x-layout>
     <x-slot:title>
         Edit User
-        </x-slot>
-        <form method="POST" action="{{route('user.update', $user->id)}}">
+    </x-slot:title>
+    <form method="POST" action="{{route('user.update', $user->id)}}" enctype="multipart/form-data">
+        @csrf
+        <h1 class="h3 mb-3 fw-normal">Edit user data</h1>
+        <x-input>
+            <x-slot:input_type>
+                file
+            </x-slot:input_type>
+            <x-slot:label>
+                Profile Picture
+            </x-slot:label>
+            <x-slot:name>
+                image
+            </x-slot:name>
+        </x-input>
+        @isset($user->image)
+        <div class="form-floating">
+            <img src="{{ url('images/'.$user->image) }}" class="img-thumbnail">
+        </div>
+        @endisset
+        <x-input>
+            <x-slot:label>
+                Name
+            </x-slot:label>
+            <x-slot:name>
+                name
+            </x-slot:name>
+            <x-slot:value>
+                {{ $user->name }}
+            </x-slot:value>
+        </x-input>
+        <x-input>
+            <x-slot:input_type>
+                email
+            </x-slot:input_type>
+            <x-slot:label>
+                Email
+            </x-slot:label>
+            <x-slot:name>
+                email
+            </x-slot:name>
+            <x-slot:value>
+                {{ $user->email }}
+            </x-slot:value>
+        </x-input>
+        <x-input>
+            <x-slot:input_type>
+                password
+            </x-slot:input_type>
+            <x-slot:label>
+                Password
+            </x-slot:label>
+            <x-slot:name>
+                password
+            </x-slot:name>
+        </x-input>
+        <x-input>
+            <x-slot:label>
+                Faculty Name
+            </x-slot:label>
+            <x-slot:name>
+                faculty
+            </x-slot:name>
+            <x-slot:value>
+                {{ $user->faculty }}
+            </x-slot:value>
+        </x-input>
+        <x-input>
+            <x-slot:label>
+                Department
+            </x-slot:label>
+            <x-slot:name>
+                department
+            </x-slot:name>
+            <x-slot:value>
+                {{ $user->department }}
+            </x-slot:value>
+        </x-input>
+        <x-input>
+            <x-slot:label>
+                Current Level (0-9)
+            </x-slot:label>
+            <x-slot:name>
+                current_year
+            </x-slot:name>
+            <x-slot:value>
+                {{ $user->current_year }}
+            </x-slot:value>
+        </x-input>
+        <br>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Edit</button>
+    </form>
+    @if($user->email_verified_at === null)
+        <form action="{{route('user.verify')}}" method="POST">
             @csrf
-{{--            {{ Form::hidden('id', $user->id) }}--}}
-            <h1 class="h3 mb-3 fw-normal">Edit user data</h1>
-            <div class="form-floating">
-                <input type="text" class="form-control" name="name" value="{{$user->name}}">
-                <label for="floatingInput">Name</label>
-            </div>
-            <div class="form-floating">
-                <input type="email" class="form-control" name="email" value="{{$user->email}}">
-                <label for="floatingInput">Email address</label>
-            </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" name="password" placeholder="Password">
-                <label for="floatingPassword">Password</label>
-            </div>
-            <div class="form-floating">
-                <input type="text" class="form-control" name="faculty" value="{{$user->faculty}}">
-                <label for="floatingInput">Faculty Name</label>
-            </div>
-            <div class="form-floating">
-                <input type="text" class="form-control" name="faculty_department" value="{{$user->faculty_department}}">
-                <label for="floatingInput">Department</label>
-            </div>
-            <div class="form-floating">
-                <input type="text" class="form-control" name="current_year" value="{{$user->current_year}}">
-                <label for="floatingInput">Current Level (0-5)</label>
-            </div>
-            <br>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Edit</button>
+            {{ Form::hidden('id', $user->id) }}
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Verify</button>
         </form>
-        @if($user->email_verified_at === null)
-            <form action="{{route('user.verify')}}" method="POST">
-                @csrf
-                {{ Form::hidden('id', $user->id) }}
-                <button class="w-100 btn btn-lg btn-primary" type="submit">Verify</button>
-            </form>
-        @endif
-        <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
+    @endif
+    <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
 </x-layout>

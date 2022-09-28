@@ -23,30 +23,31 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('register', [RegistrationController::class, 'create'])->name('user.create');
-Route::post('register', [RegistrationController::class, 'store'])->name('user.store');
+Route::get('register', [UserController::class, 'create'])->name('user.create');
+Route::post('register', [UserController::class, 'store'])->name('user.store');
 Route::view('login', 'login')->name('user.login');
 
-Route::get('list-users', [UserController::class, 'index'])->name('user.list');
+Route::get('user-list', [UserController::class, 'index'])->name('user.list');
 Route::get('edit-user/{id}', [UserController::class, 'edit'])->name('user.edit');
 Route::post('verify', [UserController::class, 'verify'])->name('user.verify');
-Route::post('edit-user', [UserController::class, 'update'])->name('user.update');
-Route::post('delete', [UserController::class, 'delete'])->name('user.delete');
+Route::post('user-edit', [UserController::class, 'update'])->name('user.update');
+Route::delete('user-delete', [UserController::class, 'delete'])->name('user.delete');
 Route::post('auth', [UserController::class, 'login'])->name('user.auth');
 
-Route::get('create-internship', [InternshipController::class, 'create'])->name('internship.create');
-Route::post('create-internship', [InternshipController::class, 'store'])->name('internship.store');
-Route::get('list-internships', [InternshipController::class, 'index'])->name('internship.list');
-Route::delete('delete-internship', [InternshipController::class, 'destroy'])->name('internship.delete');
-Route::get('edit-internship/{id}', [InternshipController::class, 'edit'])->name('internship.edit');
-Route::post('edit-internship', [InternshipController::class, 'update'])->name('internship.update');
+Route::get('internship-create', [InternshipController::class, 'create'])->name('internship.create');
+Route::post('internship-create', [InternshipController::class, 'store'])->name('internship.store');
+Route::get('internship-list', [InternshipController::class, 'index'])->name('internship.list');
+Route::delete('internship-delete', [InternshipController::class, 'destroy'])->name('internship.delete');
+Route::get('internship-edit/{id}', [InternshipController::class, 'edit'])->name('internship.edit');
+Route::post('internship-edit', [InternshipController::class, 'update'])->name('internship.update');
 
-Route::get('list-companies', [CompanyController::class, 'index'])->name('company.list');
-Route::delete('delete-company', [CompanyController::class, 'destroy'])->name('company.delete');
-Route::get('edit-company/{id}', [CompanyController::class, 'edit'])->name('company.edit');
-Route::post('edit-company', [CompanyController::class, 'update'])->name('company.update');
-Route::get('create-company', [CompanyController::class, 'create'])->name('company.create');
-Route::post('create-company', [CompanyController::class, 'store'])->name('company.store');
+Route::get('company-list', [CompanyController::class, 'index'])->name('company.list');
+Route::delete('company-delete', [CompanyController::class, 'destroy'])->name('company.delete');
+Route::get('company-edit/{id}', [CompanyController::class, 'edit'])->name('company.edit');
+Route::post('company-edit', [CompanyController::class, 'update'])->name('company.update');
+Route::get('company-create', [CompanyController::class, 'create'])->name('company.create');
+Route::post('company-create', [CompanyController::class, 'store'])->name('company.store');
+Route::view('email', 'newuser_admin_notification');
 
 //Auth::routes();
 
