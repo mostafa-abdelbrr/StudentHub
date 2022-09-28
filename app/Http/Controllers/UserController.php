@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\UserRegistered;
 use App\Mail\UserVerified;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -24,6 +25,7 @@ class UserController extends Controller
 
     public function index()
     {
+//        $users = User::factory()->count(3)->has(Post::factory()->count(2))->create();
         return view('user-list', ['users' => User::paginate(15)]);
     }
 
