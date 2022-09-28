@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\UserRegistered;
 use App\Mail\UserVerified;
 use App\Models\User;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -61,6 +61,9 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
+        if(Auth::check()){
+            return redirect()->route('home');
+        }
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -70,7 +73,7 @@ class UserController extends Controller
         })) {
             $request->session()->regenerate();
 
-            return redirect('/ListUsers');
+            return redirect()->route('home');
         } elseif (Auth::attempt($credentials)) {
 
             return back()->withErrors([
@@ -82,19 +85,19 @@ class UserController extends Controller
         ])->onlyInput('email');
     }
 
-    public function verify(Request $request)
+    public function verify($id)
     {
-        $user = User::find($request->id);
+        $user = User::find($id);
         $user->email_verified_at = now();
         $user->save();
         Mail::to($user->email)->send(new UserVerified($user));
-        return view('user', ['user' => User::find($user->id)]);
+        return view('user-edit', ['user' => $user]);
     }
 
     public function update(Request $request, $id)
     {
         $request->validate($this->rules);
-        $data = array_filter($request->except(['_token', 'id']));
+        $data = array_filter($request->except(['_token']));
         if($data['image']){
             $file = $request->file('image');
             $filename= date('YmdHi').'-'.$file->getClientOriginalName();
@@ -109,12 +112,53 @@ class UserController extends Controller
 
     public function edit($id)
     {
-        return view('user', ['user' => User::find($id)]);
+        return view('user-edit', ['user' => User::find($id)]);
     }
 
-    public function delete(Request $request)
+    public function profile()
     {
-        User::destroy($request->id);
+        return view('user-edit', ['user' => Auth::User()]);
+    }
+
+    public function profile_update(Request $request) {
+        return $this->update($request, Auth::id());
+    }
+
+    public function delete($id)
+    {
+        User::destroy($id);
         return redirect()->route('user.list');
+    }
+
+    public function edit_password() {
+        return view('password-change');
+    }
+
+    public function update_password(Request $request){
+        $request->validate([
+            'old_password' => ['required', 'min:8', 'max:100', 'current_password'],
+            'new_password' => ['required', 'min:8', 'max:100', 'confirmed'],
+        ]);
+        $user = User::find(Auth::id());
+        $data = $request->except('_token');
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+    }
+
+    public function signin() {
+        return view('login');
+    }
+
+    public function logout(Request $request)
+    {
+        if(Auth::check()){
+            Auth::logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+        }
+        return redirect()->route('home');
     }
 }

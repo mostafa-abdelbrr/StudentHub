@@ -27,10 +27,9 @@
                             <form action="{{ route('company.edit', $company->id) }}">
                                 <input type="submit" class="btn btn-primary" value="Edit" />
                             </form>
-                            <form action="{{ route('company.delete') }}" method="POST">
+                            <form action="{{ route('company.delete', $company->id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
-{{--                                {{ Form::hidden('id', $company->id) }}--}}
                                 <input type="submit" class="btn btn-danger" value="Delete"/>
                             </form>
                         </div>

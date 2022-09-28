@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ApplicableInternship;
 use Illuminate\Http\Request;
 use App\Models\Internship;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class InternshipController extends Controller
 {
@@ -21,8 +24,12 @@ class InternshipController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $filter=null)
     {
+        if ($filter)
+        {
+            return filter($request, $filter);
+        }
         return view('internship-list', ['internships' => Internship::paginate(15)]);
     }
 
@@ -47,8 +54,17 @@ class InternshipController extends Controller
         $request->validate($this->rules);
         $data = array_filter($request->except('_token'));
         $internship = Internship::create($data);
-//        $admin = User::firstWhere('role', 'admin');
-//        Mail::to($admin->email)->send(new UserRegistered($user));
+        $requirements = [['minimum_level', '>=', $internship->minimum_level], ['email_subscription', '=', '1']];
+        if ($internship->required_faculty != 'Any'){
+            array_push($requirements, ['required_faculty', '=' , $internship->required_faculty]);
+        }
+        if ($internship->required_department != 'Any'){
+            array_push($requirements, ['required_department', '=', $internship->required_department]);
+        }
+        $users = User::where($requirements);
+        foreach ($users as $user){
+            Mail::to($user->email)->send(new ApplicableInternship($user, $internship));
+        }
     }
 
     /**
@@ -70,7 +86,7 @@ class InternshipController extends Controller
      */
     public function edit($id)
     {
-        return view('internship-edit', ['it' => Internship::find($id)]);
+        return view('internship-edit', ['internship' => Internship::find($id)]);
     }
 
     /**
@@ -83,7 +99,7 @@ class InternshipController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate($this->rules);
-        $data = array_filter($request->except(['_token', 'id']));
+        $data = array_filter($request->except(['_token']));
         Internship::where('id', $id)->update($data);
     }
 
@@ -93,9 +109,26 @@ class InternshipController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        Internship::destroy($request->id);
+        Internship::destroy($id);
         return redirect()->route('internship.list');
+    }
+
+    public function show_applicable() {
+        $user = Auth::user();
+        $internships = Internship::where('minimum_level', '<=', $user->current_level)
+            ->whereIn('required_faculty', ['Any', $user->faculty])
+            ->whereIn('required_department', ['Any', $user->department]);
+        return view('internship-list', ['internships' => $internships->paginate(15), 'applicable_checked' => 'true']);
+
+    }
+
+    public function filter(Request $request, $filter){
+        if ($filter=='true') {
+            if ($request->show_applicable_only == '1') {
+                $this->show_applicable();
+            }
+        }
     }
 }

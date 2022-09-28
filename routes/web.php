@@ -21,34 +21,45 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home');
+})->name('home');
+
+Route::middleware(['auth', 'IsAdmin'])->controller(UserController::class)->group(function () {
+    Route::get('user-list', 'index')->name('user.list');
+    Route::get('edit-user/{id}', 'edit')->name('user.edit');
+    Route::post('verify', 'verify')->name('user.verify');
+    Route::post('user-edit', 'update')->name('user.update');
+    Route::delete('user-delete', 'delete')->name('user.delete');
+    Route::post('auth', 'login')->name('user.auth');
+    Route::get('password-change', 'edit_password')->name('user.edit_password');
+    Route::post('password-change', 'update_password')->name('user.update_password');
 });
 
-Route::get('register', [UserController::class, 'create'])->name('user.create');
-Route::post('register', [UserController::class, 'store'])->name('user.store');
-Route::view('login', 'login')->name('user.login');
+Route::controller(UserController::class)->group(function() {
+    Route::get('register', 'create')->name('user.create');
+    Route::post('register', 'store')->name('user.store');
+    Route::get('login', 'signin')->name('login');
+    Route::get('logout', 'logout')->name('user.logout');
+});
 
-Route::get('user-list', [UserController::class, 'index'])->name('user.list');
-Route::get('edit-user/{id}', [UserController::class, 'edit'])->name('user.edit');
-Route::post('verify', [UserController::class, 'verify'])->name('user.verify');
-Route::post('user-edit', [UserController::class, 'update'])->name('user.update');
-Route::delete('user-delete', [UserController::class, 'delete'])->name('user.delete');
-Route::post('auth', [UserController::class, 'login'])->name('user.auth');
+Route::get('profile', [UserController::class, 'profile'])->name('user.profile')->middleware('auth');
 
-Route::get('internship-create', [InternshipController::class, 'create'])->name('internship.create');
-Route::post('internship-create', [InternshipController::class, 'store'])->name('internship.store');
-Route::get('internship-list', [InternshipController::class, 'index'])->name('internship.list');
-Route::delete('internship-delete', [InternshipController::class, 'destroy'])->name('internship.delete');
-Route::get('internship-edit/{id}', [InternshipController::class, 'edit'])->name('internship.edit');
-Route::post('internship-edit', [InternshipController::class, 'update'])->name('internship.update');
+Route::controller(InternshipController::class)->group(function () {
+    Route::get('internship-create', 'create')->name('internship.create');
+    Route::post('internship-create', 'store')->name('internship.store');
+    Route::get('internship-list', 'index')->name('internship.list');
+    Route::delete('internship-delete', 'destroy')->name('internship.delete');
+    Route::get('internship-edit/{id}', 'edit')->name('internship.edit');
+    Route::post('internship-edit', 'update')->name('internship.update');
+});
 
-Route::get('company-list', [CompanyController::class, 'index'])->name('company.list');
-Route::delete('company-delete', [CompanyController::class, 'destroy'])->name('company.delete');
-Route::get('company-edit/{id}', [CompanyController::class, 'edit'])->name('company.edit');
-Route::post('company-edit', [CompanyController::class, 'update'])->name('company.update');
-Route::get('company-create', [CompanyController::class, 'create'])->name('company.create');
-Route::post('company-create', [CompanyController::class, 'store'])->name('company.store');
-Route::view('email', 'newuser_admin_notification');
-
+Route::middleware(['auth', 'IsAdmin'])->controller(CompanyController::class)->group(function () {
+    Route::get('company-list', 'index')->name('company.list');
+    Route::delete('company-delete', 'destroy')->name('company.delete');
+    Route::get('company-edit/{id}', 'edit')->name('company.edit');
+    Route::post('company-edit', 'update')->name('company.update');
+    Route::get('company-create', 'create')->name('company.create');
+    Route::post('company-create', 'store')->name('company.store');
+});
 //Auth::routes();
 
 //Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

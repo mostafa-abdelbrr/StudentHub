@@ -25,6 +25,7 @@ class User extends Authenticatable
         'faculty',
         'current_year',
         'faculty_department',
+        'email_subscription',
     ];
 
     /**

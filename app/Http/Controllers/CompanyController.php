@@ -90,7 +90,7 @@ class CompanyController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate($this->rules);
-        $data = array_filter($request->except(['_token', 'id']));
+        $data = array_filter($request->except(['_token']));
         Company::where('id', $id)->update($data);
     }
 
@@ -100,9 +100,9 @@ class CompanyController extends Controller
      * @param  \App\Models\Company  $company
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        Company::destroy($request->id);
+        Company::destroy($id);
         return redirect()->route('company.list');
 
     }
