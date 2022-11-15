@@ -151,8 +151,8 @@
                                     <div class="row">
                                         {{--                                    <div class="card w-100 h-20">--}}
                                         <div class="card w-5 h-5 col">
-                                            @isset($post->user->image)
-                                                <img src="{{ asset('images/'.$post->user->image) }}"
+                                            @isset($comment->user->image)
+                                                <img src="{{ asset('images/'.$comment->user->image) }}"
                                                      class="img-thumbnail card-img-top">
                                             @endisset
                                             <div class="card-body">
