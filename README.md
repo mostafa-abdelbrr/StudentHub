@@ -2,4 +2,7 @@
 ## Goal
 Facilitate collection of internship opportunities for university students.
 ## Features
-WIP.
+- Basic forums with posts and comments.
+- List of applicable opportunities based on user qualifications.
+- Email notifications.
+- Permissions (admin vs student vs company users).
